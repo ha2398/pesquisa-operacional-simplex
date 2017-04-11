@@ -16,8 +16,11 @@ A entrada do algoritmo será uma matriz da forma
 escrita no formato {{linha 0}, {linha 1},...,{linha n}}, correspondendo à PL
 
 **max c^T x**
+
 **sujeita a Ax <= b**
+
 **x >= 0**.
+
 
 ## Saída
 
