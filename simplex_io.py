@@ -4,19 +4,18 @@
 
 import numpy as np
 
-def read_input_matrix():
-    input_name = input("Nome do arquivo de entrada (entre aspas): ")
-    
-    input_file = open(input_name, 'r')
-    
-    matrix_string = input_file.read()
+def le_matriz_entrada(nome_entrada):
+    ''' Le o arquivo de entrada e o transforma em uma matriz Numpy '''
+
+    arquivo_entrada = open(nome_entrada, 'r')
+    string_matriz = arquivo_entrada.read()
     
     # Converte a string para o formato de input para Numpy
-    matrix_string = matrix_string.replace("},", "};")
-    matrix_string = matrix_string.replace("}", "")
-    matrix_string = matrix_string.replace("{", "")
+    string_matriz = string_matriz.replace("},", "};")
+    string_matriz = string_matriz.replace("}", "")
+    string_matriz = string_matriz.replace("{", "")
 
-    matrix = np.matrix(matrix_string)
+    matriz = np.matrix(string_matriz)
     
-    input_file.close
-    return matrix
+    arquivo_entrada.close
+    return matriz
