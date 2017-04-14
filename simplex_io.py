@@ -2,6 +2,7 @@
 @author: Hugo Araujo de Sousa [2013007463]
 """
 
+import ast
 import numpy as np
 
 def le_matriz_entrada(nome_entrada):
@@ -11,11 +12,10 @@ def le_matriz_entrada(nome_entrada):
     string_matriz = arquivo_entrada.read()
     
     # Converte a string para o formato de input para Numpy
-    string_matriz = string_matriz.replace("},", "};")
-    string_matriz = string_matriz.replace("}", "")
-    string_matriz = string_matriz.replace("{", "")
+    string_matriz = string_matriz.replace("}", "]")
+    string_matriz = string_matriz.replace("{", "[")
 
-    matriz = np.matrix(string_matriz)
+    matriz = np.array(ast.literal_eval(string_matriz))
     
     arquivo_entrada.close
     return matriz

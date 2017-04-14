@@ -3,6 +3,7 @@
 """
 
 import simplex_io as sio
+import simplex
 
 def menu():
 	''' Exibe uma mensagem inicial com opcoes e retorna a opcao escolhida '''
@@ -28,6 +29,21 @@ def modo_execucao_1(matriz): #TODO
 def modo_execucao_2(matriz): #TODO
 	''' Modo de execucao 2 '''
 
+	print("\n* Selecione o tipo de simplex:\n")
+	print("(1) Primal")
+	print("(2) Dual\n")
+
+	tipo_simplex = input("Tipo: ")
+	# Checa tipo valido
+	if (tipo_simplex < 1 or tipo_simplex > 2):
+		print("[Erro]: Tipo de simplex_ioplex invalido.")
+		exit()
+
+	# Simplex Primal
+	if (tipo_simplex == 1):
+		simplex.simplex_primal(matriz)
+
+
 def main():
 	''' Programa principal '''
 
@@ -35,7 +51,7 @@ def main():
 	# Checa opcao valida
 	if (modo_execucao < 1 or modo_execucao > 2):
 		print("[Erro]: Modo de execucao invalido.")
-		return
+		exit()
 
 	# Processa o arquivo de entrada com a PL a ser resolvida
 	matriz_entrada = processa_entrada()
