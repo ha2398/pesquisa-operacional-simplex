@@ -4,6 +4,7 @@
 
 import ast
 import numpy as np
+import re
 
 def le_matriz_entrada(nome_entrada):
     ''' Le o arquivo de entrada e o transforma em uma matriz Numpy '''
@@ -17,5 +18,23 @@ def le_matriz_entrada(nome_entrada):
 
     matriz = np.array(ast.literal_eval(string_matriz))
     
-    arquivo_entrada.close
+    arquivo_entrada.close()
     return matriz
+
+def imprime_matriz(matriz, arquivo_saida):
+    ''' Imprime uma matriz no formato definido pelo problema em um arquivo de
+        saida'''
+    string = np.array_str(matriz)
+
+    print string
+
+    string = re.sub(' +', ' ', string)
+
+    string = string.replace("[ ", "[")
+    string = string.replace(" ]", "]")
+    string = string.replace("[", "{")
+    string = string.replace("]", "}")
+    string = string.replace("\n ", ",")
+    string = string.replace(" ", ",")
+
+    print >> arquivo_saida, string

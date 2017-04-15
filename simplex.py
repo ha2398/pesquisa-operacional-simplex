@@ -2,7 +2,10 @@
 @author: Hugo Araujo de Sousa [2013007463]
 """
 
+NOME_SAIDA = "output.txt"
+
 import numpy as np
+import simplex_io as sio
 
 def get_num_res(matriz):
 	''' Retorna o numero de restricoes da PL '''
@@ -39,8 +42,12 @@ def tableau_inicial(matriz):
 
 def simplex_primal(matriz): #TODO
 	''' Aplica a o simplex primal a uma matriz '''
-	num_var = get_num_res(matriz)
+	arquivo_saida = open(NOME_SAIDA, 'w')
 
+	num_var = get_num_res(matriz)
 	identidade = matriz_id(num_var)
 
 	tableau = tableau_inicial(matriz)
+	sio.imprime_matriz(tableau, arquivo_saida)
+
+	arquivo_saida.close()
