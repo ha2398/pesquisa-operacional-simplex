@@ -25,9 +25,6 @@ def imprime_matriz(matriz, arquivo_saida):
     ''' Imprime uma matriz no formato definido pelo problema em um arquivo de
         saida'''
     string = np.array_str(matriz)
-
-    print string
-
     string = re.sub(' +', ' ', string)
 
     string = string.replace("[ ", "[")

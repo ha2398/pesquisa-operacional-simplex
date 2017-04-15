@@ -40,6 +40,13 @@ def tableau_inicial(matriz):
 	nova_matriz[0] = nova_matriz[0] * -1
 	return nova_matriz
 
+def simplex_primal_continua(tableau):
+	''' Retorna true se e somente se o simplex primal ainda tem iteracoes a
+		executar '''
+	primeira_linha = tableau[0]
+	num_neg = [neg for neg in primeira_linha if neg < 0]
+	return len(num_neg) > 0
+
 def simplex_primal(matriz): #TODO
 	''' Aplica a o simplex primal a uma matriz '''
 	arquivo_saida = open(NOME_SAIDA, 'w')
@@ -49,5 +56,7 @@ def simplex_primal(matriz): #TODO
 
 	tableau = tableau_inicial(matriz)
 	sio.imprime_matriz(tableau, arquivo_saida)
+
+	print tableau
 
 	arquivo_saida.close()
