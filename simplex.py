@@ -40,23 +40,53 @@ def tableau_inicial(matriz):
 	nova_matriz[0] = nova_matriz[0] * -1
 	return nova_matriz
 
-def simplex_primal_continua(tableau):
+def simplex_primal_continua(tableau, num_res):
 	''' Retorna true se e somente se o simplex primal ainda tem iteracoes a
 		executar '''
-	primeira_linha = tableau[0]
+	primeira_linha = tableau[0][num_res:len(tableau)-1]
 	num_neg = [neg for neg in primeira_linha if neg < 0]
 	return len(num_neg) > 0
+
+def escolhe_pivot(tableau, num_res):
+	''' Retorna o indice do elemento pivo no tableau atual '''
+	primeira_linha = tableau[0][num_res:len(tableau[0])-1]
+	coluna = num_res
+
+	while (primeira_linha[coluna] > 0):
+		coluna = coluna + 1
+
+	razoes = []
+	num_linhas_tableau = len(tableau)
+	num_colunas_tableau = len(tableau[0])
+
+	# Obtem as razoes nao-negativas
+	for i in range(num_linhas_tableau-1, 0, -1):
+		a = tableau[coluna][i]
+
+		if (a == 0):
+			continue
+
+		b = tableau[i][num_colunas_tableau-1]
+		razao = b/a
+
+		if razao > 0:
+			razoes.insert(0, (razao, i))
+
+	# Checa se nao ha razoes nao-negativas
+	if (len(razoes) == 0):
+		return (-1, -1)
+
+	razoes = sorted(razoes, key=lambda tup: tup[0])
+	return (razoes[0][1], coluna)
 
 def simplex_primal(matriz): #TODO
 	''' Aplica a o simplex primal a uma matriz '''
 	arquivo_saida = open(NOME_SAIDA, 'w')
 
-	num_var = get_num_res(matriz)
-	identidade = matriz_id(num_var)
+	num_res = get_num_res(matriz)
+	identidade = matriz_id(num_res)
 
 	tableau = tableau_inicial(matriz)
 	sio.imprime_matriz(tableau, arquivo_saida)
-
-	print tableau
 
 	arquivo_saida.close()
