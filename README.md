@@ -43,11 +43,11 @@ O segundo modo, somente para PLs viáveis e limitadas, o programa consulta o usu
 
 Para executar o programa, é preciso ter o Python 3 instalado.
 
-$ python3 tp1.py <input> <output>
+$ python3 tp1.py arquivo_entrada arquivo_saida
 
 Além disso, pode-se usar a opção make para execução:
 
-$ make ENTRADA=<input> SAIDA=<saida>
+$ make ENTRADA=arquivo_entrada SAIDA=arquivo_saida
 
 Ou, para limpar a pasta de arquivos de saida e arquivos objeto:
 
