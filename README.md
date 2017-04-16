@@ -39,6 +39,20 @@ c) Se a PL for viável, o programa imprime:
 
 O segundo modo, somente para PLs viáveis e limitadas, o programa consulta o usuário se ele deseja resolver pelo método simplex primal ou simplex dual.
 
+## Execução
+
+Para executar o programa, é preciso ter o Python 3 instalado.
+
+$ python3 tp1.py <input> <output>
+
+Além disso, pode-se usar a opção make para execução:
+
+$ make ENTRADA=<input> SAIDA=<saida>
+
+Ou, para limpar a pasta de arquivos de saida e arquivos objeto:
+
+$ make clean
+
 ## Observações
 
 O programa foi desenvolvido usando Python 3 (3.4.3) como referência.
