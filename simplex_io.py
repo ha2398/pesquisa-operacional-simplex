@@ -6,6 +6,11 @@ import ast
 import numpy as np
 import re
 
+def configura_impressao_float():
+    ''' Configura como os dados do tipo float em arrays numpy serao
+        impressos '''
+    np.set_printoptions(precision=3)
+
 def le_matriz_entrada(nome_entrada):
     ''' Le o arquivo de entrada e o transforma em uma matriz Numpy '''
 
@@ -16,12 +21,12 @@ def le_matriz_entrada(nome_entrada):
     string_matriz = string_matriz.replace("}", "]")
     string_matriz = string_matriz.replace("{", "[")
 
-    matriz = np.array(ast.literal_eval(string_matriz))
+    matriz = np.array(ast.literal_eval(string_matriz), dtype=float)
     
     arquivo_entrada.close()
     return matriz
 
-def imprime_matriz(matriz, arquivo_saida):
+def imprime_matriz(matriz):
     ''' Imprime uma matriz no formato definido pelo problema em um arquivo de
         saida'''
     string = np.array_str(matriz)
@@ -34,4 +39,11 @@ def imprime_matriz(matriz, arquivo_saida):
     string = string.replace("\n ", ",")
     string = string.replace(" ", ",")
 
-    print >> arquivo_saida, string
+    # Remove ponto flutuante de numeros com parte decimal = 0.
+    string = string.replace(".,", ",")
+    string = string.replace(".}", "}")
+
+    # Adiciona quebra de linha ao final da string
+    string = string + '\n'
+
+    return string

@@ -2,8 +2,6 @@
 @author: Hugo Araujo de Sousa [2013007463]
 """
 
-NOME_SAIDA = "output.txt"
-
 import numpy as np
 import simplex_io as sio
 
@@ -37,14 +35,21 @@ def tableau_inicial(matriz):
 	for i in range(num_res-1, -1, -1):
 		nova_matriz = np.insert(nova_matriz, 0, identidade_t[i], axis=1)
 
-	nova_matriz[0] = nova_matriz[0] * -1
+	colunas = len(nova_matriz[0])
+
+	# Multiplica a primeira linha por -1
+	for i in range(0, colunas):
+		if (nova_matriz[0][i] != 0):
+			nova_matriz[0][i] = nova_matriz[0][i] * -1
+
 	return nova_matriz
 
 def simplex_primal_continua(tableau, num_res):
 	''' Retorna true se e somente se o simplex primal ainda tem iteracoes a
 		executar '''
-	primeira_linha = tableau[0][num_res:len(tableau)-1]
+	primeira_linha = tableau[0][num_res:len(tableau[0])-1]
 	num_neg = [neg for neg in primeira_linha if neg < 0]
+
 	return len(num_neg) > 0
 
 def escolhe_pivot(tableau, num_res):
@@ -61,7 +66,7 @@ def escolhe_pivot(tableau, num_res):
 
 	# Obtem as razoes nao-negativas
 	for i in range(num_linhas_tableau-1, 0, -1):
-		a = tableau[coluna][i]
+		a = tableau[i][coluna]
 
 		if (a == 0):
 			continue
@@ -79,14 +84,43 @@ def escolhe_pivot(tableau, num_res):
 	razoes = sorted(razoes, key=lambda tup: tup[0])
 	return (razoes[0][1], coluna)
 
+def pivoteamento(tableau, i, j):
+	''' Realiza o pivoteamento em um tableau, tendo como elemento pivot
+		o elemento dado pelos indices i e j, ou seja T[i][j] '''
+	colunas = len(tableau[0])
+	linhas = len(tableau)
+	pivot = tableau[i][j]
+
+	if (pivot != 1):
+		for k in range(0, colunas):
+			tableau[i][k] = tableau[i][k] / pivot
+
+		pivot = tableau[i][j]
+
+	# Para cada linha do tableau
+	for k in range(0, linhas):
+		if (k == i):
+			continue
+
+		# Pivotea cada elemento da linha
+		fator = -1 * tableau[k][j]
+		for x in range(0, colunas):
+			tableau[k][x] = (tableau[i][x] * fator) + tableau[k][x]
+
+	return tableau
+
 def simplex_primal(matriz): #TODO
 	''' Aplica a o simplex primal a uma matriz '''
-	arquivo_saida = open(NOME_SAIDA, 'w')
-
 	num_res = get_num_res(matriz)
 	identidade = matriz_id(num_res)
+	saida = ""
 
 	tableau = tableau_inicial(matriz)
-	sio.imprime_matriz(tableau, arquivo_saida)
 
-	arquivo_saida.close()
+	saida = saida + sio.imprime_matriz(tableau)
+	while (simplex_primal_continua(tableau, num_res)):
+		i_pivot = escolhe_pivot(tableau, num_res)
+		tableau = pivoteamento(tableau, i_pivot[0], i_pivot[1])
+		saida = saida + sio.imprime_matriz(tableau)
+
+	return saida

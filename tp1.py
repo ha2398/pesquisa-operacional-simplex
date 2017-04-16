@@ -4,6 +4,7 @@
 
 import simplex_io as sio
 import simplex
+import sys
 
 def menu():
 	''' Exibe uma mensagem inicial com opcoes e retorna a opcao escolhida '''
@@ -17,10 +18,9 @@ def menu():
 	opcao = input("Modo: ")
 	return opcao
 
-def processa_entrada():
+def processa_entrada(nome_entrada):
 	''' Abre o arquivo de entrada contendo a PL a ser resolvida '''
 
-	nome_entrada = input("Nome do arquivo de entrada (entre aspas): ")
 	return sio.le_matriz_entrada(nome_entrada)
 
 def modo_execucao_1(matriz): #TODO
@@ -33,7 +33,7 @@ def modo_execucao_2(matriz): #TODO
 	print("(1) Primal")
 	print("(2) Dual\n")
 
-	tipo_simplex = input("Tipo: ")
+	tipo_simplex = int(input("Tipo: "))
 	# Checa tipo valido
 	if (tipo_simplex < 1 or tipo_simplex > 2):
 		print("[Erro]: Tipo de simplex_ioplex invalido.")
@@ -41,26 +41,37 @@ def modo_execucao_2(matriz): #TODO
 
 	# Simplex Primal
 	if (tipo_simplex == 1):
-		simplex.simplex_primal(matriz)
+		return simplex.simplex_primal(matriz)
 
 
 def main():
 	''' Programa principal '''
+	# Checa numero de argumentos recebidos
+	if (len(sys.argv) != 3):
+		print("[Erro]: Numero incorreto de parametros.")
+		print("Uso: python", sys.argv[0], "<entrada> <saida>")
 
-	modo_execucao = menu()
+	nome_entrada = sys.argv[1]
+	nome_saida = sys.argv[2]
+
+	modo_execucao = int(menu())
 	# Checa opcao valida
 	if (modo_execucao < 1 or modo_execucao > 2):
 		print("[Erro]: Modo de execucao invalido.")
 		exit()
 
 	# Processa o arquivo de entrada com a PL a ser resolvida
-	matriz_entrada = processa_entrada()
+	matriz_entrada = processa_entrada(nome_entrada)
 
 	# Executa o programa de acordo com o modo selecionado
 	if (modo_execucao == 1):
 		modo_execucao_1(matriz_entrada)
 	if (modo_execucao == 2):
-		modo_execucao_2(matriz_entrada)
+		saida = modo_execucao_2(matriz_entrada)
+
+	arquivo_saida = open(nome_saida, 'w')
+	print(saida, end="", file=arquivo_saida)
 
 # Execucao do programa principal
+sio.configura_impressao_float()
 main()

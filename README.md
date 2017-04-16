@@ -38,3 +38,9 @@ c) Se a PL for viável, o programa imprime:
 "Solução ótima x = {solução}, com valor objetivo **valor**, e solução dual y = {solução}".
 
 O segundo modo, somente para PLs viáveis e limitadas, o programa consulta o usuário se ele deseja resolver pelo método simplex primal ou simplex dual.
+
+## Observações
+
+O programa foi desenvolvido usando Python 3 (3.4.3) como referência.
+
+Pode ser necessária a instalação de pacotes adicionais, como Numpy.
