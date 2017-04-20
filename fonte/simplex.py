@@ -3,15 +3,16 @@
 """
 
 import numpy as np
+import simplex_auxiliar as aux
 import simplex_io as sio
 
-def get_num_res(matriz):
+def get_num_res(pl):
 	''' Retorna o numero de restricoes da PL '''
-	return len(matriz) - 1
+	return len(pl) - 1
 
-def get_num_var(matriz):
+def get_num_var(pl):
 	''' Retorna o numero de variaveis da PL '''
-	return len(matriz[0]) - 1
+	return len(pl[0]) - 1
 
 def matriz_id(num_res):
 	''' Cria matriz identidade a ser adicionada ao primeiro tableau '''
@@ -20,17 +21,26 @@ def matriz_id(num_res):
 	identidade = np.append(zeros, identidade, axis = 0)
 	return identidade
 
-def tableau_inicial(matriz):
-	''' Merge uma matriz e a identidade para obter o primeiro tableau '''
-	num_var = get_num_var(matriz)
-	num_res = get_num_res(matriz)
+def FPI(pl):
+	''' Coloca uma PL em forma padrao de igualdades '''
+
+	fpi = np.copy(pl)
+	num_var = get_num_var(pl)
+	num_res = get_num_res(pl)
 
 	identidade_t = np.transpose(matriz_id(num_res))
 
-	nova_matriz = matriz
-
 	for i in range(num_res-1, -1, -1):
-		nova_matriz = np.insert(nova_matriz, num_var, identidade_t[i], axis=1)
+		fpi = np.insert(fpi, num_var, identidade_t[i], axis=1)
+
+	return fpi
+
+def tableau_inicial(pl):
+	''' Merge uma PL em FPI e a identidade para obter o primeiro tableau '''
+
+	num_res = get_num_res(pl)
+	nova_matriz = FPI(pl)
+	identidade_t = np.transpose(matriz_id(num_res))
 
 	for i in range(num_res-1, -1, -1):
 		nova_matriz = np.insert(nova_matriz, 0, identidade_t[i], axis=1)
@@ -52,8 +62,9 @@ def simplex_primal_continua(tableau, num_res):
 
 	return len(num_neg) > 0
 
-def escolhe_pivot(tableau, num_res):
-	''' Retorna o indice do elemento pivo no tableau atual '''
+def escolhe_pivot_p(tableau, num_res):
+	''' Retorna o indice do elemento pivot no tableau atual, considerando
+		o metodo de simplex primal '''
 	primeira_linha = tableau[0][num_res:len(tableau[0])-1]
 	coluna = num_res
 
@@ -109,18 +120,21 @@ def pivoteamento(tableau, i, j):
 
 	return tableau
 
-def simplex_primal(matriz): #TODO
-	''' Aplica a o simplex primal a uma matriz '''
-	num_res = get_num_res(matriz)
+def simplex_primal(pl):
+	''' Aplica a o simplex primal a uma pl '''
+	num_res = get_num_res(pl)
 	identidade = matriz_id(num_res)
 	saida = ""
 
-	tableau = tableau_inicial(matriz)
+	tableau = tableau_inicial(FPI(pl))
 
 	saida = saida + sio.imprime_matriz(tableau)
 	while (simplex_primal_continua(tableau, num_res)):
-		i_pivot = escolhe_pivot(tableau, num_res)
+		i_pivot = escolhe_pivot_p(tableau, num_res)
 		tableau = pivoteamento(tableau, i_pivot[0], i_pivot[1])
 		saida = saida + sio.imprime_matriz(tableau)
 
-	return saida
+	return (tableau, saida)
+
+def simplex_dual(pl):#TODO
+	''' Aplica o simplex dual a uma pl '''

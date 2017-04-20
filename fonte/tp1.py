@@ -25,6 +25,9 @@ def processa_entrada(nome_entrada):
 
 def modo_execucao_1(matriz): #TODO
 	''' Modo de execucao 1 '''
+	print(matriz)
+
+	return "{1,2,3},{3,4,5}"
 
 def modo_execucao_2(matriz): #TODO
 	''' Modo de execucao 2 '''
@@ -41,7 +44,7 @@ def modo_execucao_2(matriz): #TODO
 
 	# Simplex Primal
 	if (tipo_simplex == 1):
-		return simplex.simplex_primal(matriz)
+		return simplex.simplex_primal(matriz)[1]
 
 
 def main():
@@ -61,13 +64,13 @@ def main():
 		exit()
 
 	# Processa o arquivo de entrada com a PL a ser resolvida
-	matriz_entrada = processa_entrada(nome_entrada)
+	pl = processa_entrada(nome_entrada)
 
 	# Executa o programa de acordo com o modo selecionado
 	if (modo_execucao == 1):
-		modo_execucao_1(matriz_entrada)
+		saida = modo_execucao_1(pl)
 	if (modo_execucao == 2):
-		saida = modo_execucao_2(matriz_entrada)
+		saida = modo_execucao_2(pl)
 
 	arquivo_saida = open(nome_saida, 'w')
 	print(saida, end="", file=arquivo_saida)
