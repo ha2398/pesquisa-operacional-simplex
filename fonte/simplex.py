@@ -120,6 +120,11 @@ def pivoteamento(tableau, i, j):
 
 	return tableau
 
+def val_obj_otimo(tableau):
+	''' Retorna o valor objetivo da PL de acordo com o tableau passado como
+		parametro. '''
+	return tableau[0][len(tableau[0])-1]
+
 def simplex_primal(pl):
 	''' Aplica a o simplex primal a uma pl '''
 	num_res = get_num_res(pl)

@@ -2,6 +2,7 @@
 @author: Hugo Araujo de Sousa [2013007463]
 """
 
+import simplex_auxiliar as aux
 import simplex_io as sio
 import simplex
 import sys
@@ -65,6 +66,8 @@ def main():
 
 	# Processa o arquivo de entrada com a PL a ser resolvida
 	pl = processa_entrada(nome_entrada)
+
+	print("PL viavel? ", aux.checa_viabilidade(pl))
 
 	# Executa o programa de acordo com o modo selecionado
 	if (modo_execucao == 1):

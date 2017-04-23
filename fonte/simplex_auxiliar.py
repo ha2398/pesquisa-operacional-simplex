@@ -23,6 +23,11 @@ def constroi_auxiliar(pl):
 
 	auxiliar = simplex.FPI(pl)
 
+	# Faz b >= 0
+	for i in range(1, num_res+1):
+		if (auxiliar[i][len(auxiliar[i])-1] < 0):
+			auxiliar[i] = auxiliar[i] * -1
+
 	# Constroi a primeira linha
 	zeros = np.array([0 for i in range(0, num_var)], dtype=float)
 	uns = np.array([-1 for i in range(0, num_res+1)], dtype=float)
@@ -39,4 +44,7 @@ def checa_viabilidade(pl):
 	''' Checa a viabilidade de uma PL. Retorna true se a PL for viavel e false
 		caso contrario. '''
 
-	return 0
+	tableau_f = simplex.simplex_primal(pl)[0]
+	otimo = simplex.val_obj_otimo(tableau_f)
+
+	return (otimo == 0)
