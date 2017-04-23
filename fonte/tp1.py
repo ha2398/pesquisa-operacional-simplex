@@ -67,8 +67,6 @@ def main():
 	# Processa o arquivo de entrada com a PL a ser resolvida
 	pl = processa_entrada(nome_entrada)
 
-	print("PL viavel? ", aux.checa_viabilidade(pl))
-
 	# Executa o programa de acordo com o modo selecionado
 	if (modo_execucao == 1):
 		saida = modo_execucao_1(pl)

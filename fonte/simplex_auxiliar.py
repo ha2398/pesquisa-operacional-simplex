@@ -41,10 +41,11 @@ def constroi_auxiliar(pl):
 	return auxiliar
 
 def checa_viabilidade(pl):
-	''' Checa a viabilidade de uma PL. Retorna true se a PL for viavel e false
+	''' Checa a viabilidade de uma PL. Retorna True se a PL for viavel e False
 		caso contrario. '''
 
-	tableau_f = simplex.simplex_primal(pl)[0]
-	otimo = simplex.val_obj_otimo(tableau_f)
+	auxiliar = constroi_auxiliar(pl)
+	tableau_f = simplex.simplex_primal(auxiliar)[0]
+	otimo = simplex.val_obj_otimo_p(tableau_f)
 
 	return (otimo == 0)

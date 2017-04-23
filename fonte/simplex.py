@@ -55,7 +55,7 @@ def tableau_inicial(pl):
 	return nova_matriz
 
 def simplex_primal_continua(tableau, num_res):
-	''' Retorna true se e somente se o simplex primal ainda tem iteracoes a
+	''' Retorna True se e somente se o simplex primal ainda tem iteracoes a
 		executar '''
 	primeira_linha = tableau[0][num_res:len(tableau[0])-1]
 	num_neg = [neg for neg in primeira_linha if neg < 0]
@@ -120,10 +120,48 @@ def pivoteamento(tableau, i, j):
 
 	return tableau
 
-def val_obj_otimo(tableau):
+def val_obj_otimo_p(tableau):
 	''' Retorna o valor objetivo da PL de acordo com o tableau passado como
 		parametro. '''
 	return tableau[0][len(tableau[0])-1]
+
+def checa_coluna_basica(coluna):
+	''' Retorna True se, e somente se, a coluna eh basica no tableau '''
+	basica = False
+	num_zeros = 0
+	num_uns = 0
+	tam_coluna = len(coluna)
+
+	for i in range(0, tam_coluna):
+		if (coluna[i] == 0):
+			num_zeros = num_zeros + 1
+		elif (coluna[i] == 1):
+			num_uns = num_uns + 1
+
+	if (num_zeros == (tam_coluna-1) and num_uns == 1):
+		basica = True
+
+	return basica
+
+def obtem_solucao(tableau, num_res):
+	''' Retorna o vetor que representa a solução da PL representada pelo
+		tableau final passado com parametro.'''
+	solucao = np.array([], dtype=float)
+	num_linhas = len(tableau)
+	num_colunas = len(tableau[0])
+	b = tableau[0:num_linhas+1, num_colunas-1]
+
+	# Analisa cada coluna
+	for i in range(num_res, num_colunas):
+		coluna_atual = tableau[0:num_linhas+1, i]
+
+		if (checa_coluna_basica(coluna_atual)):
+			for j in range(1, num_linhas):
+				if (coluna_atual[j] == 1):
+					solucao = np.append(solucao, np.array(b[j]))
+					break
+
+	return solucao
 
 def simplex_primal(pl):
 	''' Aplica a o simplex primal a uma pl '''
