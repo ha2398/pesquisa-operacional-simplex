@@ -2,6 +2,8 @@
 @author: Hugo Araujo de Sousa [2013007463]
 """
 
+import certificados as cert
+import numpy as np
 import simplex_auxiliar as aux
 import simplex_io as sio
 import simplex
@@ -26,9 +28,15 @@ def processa_entrada(nome_entrada):
 
 def modo_execucao_1(pl): #TODO
 	''' Modo de execucao 1 '''
-	auxiliar = aux.constroi_auxiliar(pl)
+	otimalidade, tableau_aux = aux.checa_viabilidade(pl)
 
-	return ""
+	# Para PLs viaveis:
+	if (otimalidade == True):
+		return "PL viavel\n"
+	else:
+		cert_inv = cert.cert_inviabilidade(tableau_aux)
+		cert_str = np.array_str(cert_inv).replace('[', '{').replace(']', '}')
+		return "PL inviável, aqui está um certificado " + cert_str + "\n"
 
 def modo_execucao_2(pl): #TODO
 	''' Modo de execucao 2 '''
@@ -45,8 +53,8 @@ def modo_execucao_2(pl): #TODO
 
 	# Simplex Primal
 	if (tipo_simplex == 1):
-		pl_fpi = simplex.FPI(pl)
-		return simplex.simplex_primal(pl_fpi, [4,5])[1]
+		tableau_inicial = simplex.tableau_inicial(simplex.FPI(pl))
+		return simplex.simplex_primal(tableau_inicial, [4,5])[1]
 
 
 def main():
@@ -68,14 +76,16 @@ def main():
 	# Processa o arquivo de entrada com a PL a ser resolvida
 	pl = processa_entrada(nome_entrada)
 
+	arquivo_saida = open(nome_saida, 'w')
+
 	# Executa o programa de acordo com o modo selecionado
 	if (modo_execucao == 1):
 		saida = modo_execucao_1(pl)
 	if (modo_execucao == 2):
 		saida = modo_execucao_2(pl)
 
-	arquivo_saida = open(nome_saida, 'w')
 	print(saida, end="", file=arquivo_saida)
+	arquivo_saida.close()
 
 # Execucao do programa principal
 sio.configura_impressao_float()

@@ -54,21 +54,23 @@ def tableau_inicial(pl):
 
 	return nova_matriz
 
-def simplex_primal_continua(tableau, num_res):
+def simplex_primal_continua(tableau):
 	''' Retorna True se e somente se o simplex primal ainda tem iteracoes a
 		executar '''
+	num_res = get_num_res(tableau)
 	primeira_linha = tableau[0][num_res:len(tableau[0])-1]
 	num_neg = [neg for neg in primeira_linha if neg < 0]
 
 	return len(num_neg) > 0
 
-def escolhe_pivot_p(tableau, num_res):
+def escolhe_pivot_p(tableau):
 	''' Retorna o indice do elemento pivot no tableau atual, considerando
 		o metodo de simplex primal '''
+	num_res = get_num_res(tableau)
 	primeira_linha = tableau[0][num_res:len(tableau[0])-1]
 	coluna = num_res
 
-	while (primeira_linha[coluna] > 0):
+	while (primeira_linha[coluna-num_res] >= 0):
 		coluna = coluna + 1
 
 	razoes = []
@@ -76,7 +78,7 @@ def escolhe_pivot_p(tableau, num_res):
 	num_colunas_tableau = len(tableau[0])
 
 	# Obtem as razoes nao-negativas
-	for i in range(num_linhas_tableau-1, 0, -1):
+	for i in range(1, num_linhas_tableau):
 		a = tableau[i][coluna]
 
 		if (a == 0):
@@ -85,7 +87,7 @@ def escolhe_pivot_p(tableau, num_res):
 		b = tableau[i][num_colunas_tableau-1]
 		razao = b/a
 
-		if razao >= 0:
+		if (razao >= 0):
 			razoes.insert(0, (razao, i))
 
 	# Checa se nao ha razoes nao-negativas
@@ -179,23 +181,24 @@ def obtem_solucao(tableau):
 
 	return solucao
 
-def simplex_primal(pl, base):
+def simplex_primal(tableau, base):
 	''' Aplica a o simplex primal a uma pl, tendo como ponto de partida 
-		a base viavel de colunas passada como parametro '''
-	num_res = get_num_res(pl)
+		a base viavel de colunas passada como parametro e o tableau inicial.
+		Retorna uma tupla que contem o tableau final e uma string que
+		representa a sequencia de tableaux obtida durante o simplex '''
+	num_res = get_num_res(tableau)
 	identidade = matriz_op(num_res)
 	saida = ""
 
-	tableau = tableau_inicial(pl)
-	tableau = ajusta_base(tableau, base)
+	novo_tableau = ajusta_base(tableau, base)
 
-	saida = saida + sio.imprime_matriz(tableau)
-	while (simplex_primal_continua(tableau, num_res)):
-		i_pivot = escolhe_pivot_p(tableau, num_res)
-		tableau = pivoteamento(tableau, i_pivot[0], i_pivot[1])
-		saida = saida + sio.imprime_matriz(tableau)
+	saida = saida + sio.imprime_matriz(novo_tableau)
+	while (simplex_primal_continua(novo_tableau)):
+		i_pivot = escolhe_pivot_p(novo_tableau)
+		novo_tableau = pivoteamento(novo_tableau, i_pivot[0], i_pivot[1])
+		saida = saida + sio.imprime_matriz(novo_tableau)
 
-	return (tableau, saida)
+	return (novo_tableau, saida)
 
 def simplex_dual(pl):#TODO
 	''' Aplica o simplex dual a uma pl '''

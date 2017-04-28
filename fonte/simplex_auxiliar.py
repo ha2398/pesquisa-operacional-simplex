@@ -34,16 +34,15 @@ def constroi_auxiliar(pl):
 
 	# Ajusta a base viavel da PL
 	base_viavel = list(range(len(zeros), len(zeros)+len(uns)-1))
-	auxiliar = simplex.ajusta_base(auxiliar, base_viavel)
 
-	return auxiliar
+	return (auxiliar, base_viavel)
 
 def checa_viabilidade(pl):
 	''' Checa a viabilidade de uma PL. Retorna True se a PL for viavel e False
 		caso contrario. '''
 
-	auxiliar = constroi_auxiliar(pl)
-	tableau_f = simplex.simplex_primal(auxiliar)[0]
+	auxiliar, base = constroi_auxiliar(pl)
+	tableau_f = simplex.simplex_primal(auxiliar, base)[0]
 	otimo = simplex.val_obj_otimo_p(tableau_f)
 
-	return (otimo == 0)
+	return ((otimo == 0), tableau_f)
