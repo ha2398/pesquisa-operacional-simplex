@@ -24,13 +24,13 @@ def processa_entrada(nome_entrada):
 
 	return sio.le_matriz_entrada(nome_entrada)
 
-def modo_execucao_1(matriz): #TODO
+def modo_execucao_1(pl): #TODO
 	''' Modo de execucao 1 '''
-	print(matriz)
+	auxiliar = aux.constroi_auxiliar(pl)
 
-	return "{1,2,3},{3,4,5}"
+	return ""
 
-def modo_execucao_2(matriz): #TODO
+def modo_execucao_2(pl): #TODO
 	''' Modo de execucao 2 '''
 
 	print("\n* Selecione o tipo de simplex:\n")
@@ -40,12 +40,13 @@ def modo_execucao_2(matriz): #TODO
 	tipo_simplex = int(input("Tipo: "))
 	# Checa tipo valido
 	if (tipo_simplex < 1 or tipo_simplex > 2):
-		print("[Erro]: Tipo de simplex_ioplex invalido.")
+		print("[Erro]: Tipo de simplex invalido.")
 		exit()
 
 	# Simplex Primal
 	if (tipo_simplex == 1):
-		return simplex.simplex_primal(matriz)[1]
+		pl_fpi = simplex.FPI(pl)
+		return simplex.simplex_primal(pl_fpi, [4,5])[1]
 
 
 def main():

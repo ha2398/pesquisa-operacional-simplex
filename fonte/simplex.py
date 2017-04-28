@@ -14,12 +14,12 @@ def get_num_var(pl):
 	''' Retorna o numero de variaveis da PL '''
 	return len(pl[0]) - 1
 
-def matriz_id(num_res):
-	''' Cria matriz identidade a ser adicionada ao primeiro tableau '''
+def matriz_op(num_res):
+	''' Cria matriz de operacoes a ser adicionada ao primeiro tableau '''
 	zeros = [[0. for x in range(0, num_res)]]
-	identidade = np.identity(num_res)
-	identidade = np.append(zeros, identidade, axis = 0)
-	return identidade
+	op = np.identity(num_res)
+	op = np.append(zeros, op, axis = 0)
+	return op
 
 def FPI(pl):
 	''' Coloca uma PL em forma padrao de igualdades '''
@@ -28,7 +28,7 @@ def FPI(pl):
 	num_var = get_num_var(pl)
 	num_res = get_num_res(pl)
 
-	identidade_t = np.transpose(matriz_id(num_res))
+	identidade_t = np.transpose(matriz_op(num_res))
 
 	for i in range(num_res-1, -1, -1):
 		fpi = np.insert(fpi, num_var, identidade_t[i], axis=1)
@@ -37,10 +37,10 @@ def FPI(pl):
 
 def tableau_inicial(pl):
 	''' Merge uma PL em FPI e a identidade para obter o primeiro tableau '''
-
 	num_res = get_num_res(pl)
-	nova_matriz = FPI(pl)
-	identidade_t = np.transpose(matriz_id(num_res))
+	nova_matriz = np.copy(pl)
+
+	identidade_t = np.transpose(matriz_op(num_res))
 
 	for i in range(num_res-1, -1, -1):
 		nova_matriz = np.insert(nova_matriz, 0, identidade_t[i], axis=1)
@@ -85,7 +85,7 @@ def escolhe_pivot_p(tableau, num_res):
 		b = tableau[i][num_colunas_tableau-1]
 		razao = b/a
 
-		if razao > 0:
+		if razao >= 0:
 			razoes.insert(0, (razao, i))
 
 	# Checa se nao ha razoes nao-negativas
@@ -102,6 +102,7 @@ def pivoteamento(tableau, i, j):
 	linhas = len(tableau)
 	pivot = tableau[i][j]
 
+	# Divide todos os elementos da linha por pivot
 	if (pivot != 1):
 		for k in range(0, colunas):
 			tableau[i][k] = tableau[i][k] / pivot
@@ -119,6 +120,20 @@ def pivoteamento(tableau, i, j):
 			tableau[k][x] = (tableau[i][x] * fator) + tableau[k][x]
 
 	return tableau
+
+def ajusta_base(tableau, base):
+	''' Ajusta a base viavel de um tableau '''
+
+	num_res = get_num_res(tableau)
+	num_var = get_num_var(tableau) - num_res
+
+	tam_base = len(base)
+	novo_tableau = np.copy(tableau)
+
+	for i in range(0, tam_base):
+		novo_tableau = pivoteamento(novo_tableau, i+1, base[i])
+
+	return novo_tableau
 
 def val_obj_otimo_p(tableau):
 	''' Retorna o valor objetivo da PL de acordo com o tableau passado como
@@ -143,10 +158,11 @@ def checa_coluna_basica(coluna):
 
 	return basica
 
-def obtem_solucao(tableau, num_res):
+def obtem_solucao(tableau):
 	''' Retorna o vetor que representa a solução da PL representada pelo
 		tableau final passado com parametro.'''
 	solucao = np.array([], dtype=float)
+	num_res = get_num_res(tableau)
 	num_linhas = len(tableau)
 	num_colunas = len(tableau[0])
 	b = tableau[0:num_linhas+1, num_colunas-1]
@@ -163,13 +179,15 @@ def obtem_solucao(tableau, num_res):
 
 	return solucao
 
-def simplex_primal(pl):
-	''' Aplica a o simplex primal a uma pl '''
+def simplex_primal(pl, base):
+	''' Aplica a o simplex primal a uma pl, tendo como ponto de partida 
+		a base viavel de colunas passada como parametro '''
 	num_res = get_num_res(pl)
-	identidade = matriz_id(num_res)
+	identidade = matriz_op(num_res)
 	saida = ""
 
-	tableau = tableau_inicial(FPI(pl))
+	tableau = tableau_inicial(pl)
+	tableau = ajusta_base(tableau, base)
 
 	saida = saida + sio.imprime_matriz(tableau)
 	while (simplex_primal_continua(tableau, num_res)):

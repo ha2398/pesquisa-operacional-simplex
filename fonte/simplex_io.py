@@ -6,10 +6,12 @@ import ast
 import numpy as np
 import re
 
+PRECISAO_FLOAT = 3
+
 def configura_impressao_float():
     ''' Configura como os dados do tipo float em arrays numpy serao
         impressos '''
-    np.set_printoptions(precision=3)
+    np.set_printoptions(precision=PRECISAO_FLOAT)
     
 def le_matriz_entrada(nome_entrada):
     ''' Le o arquivo de entrada e o transforma em uma matriz Numpy '''
