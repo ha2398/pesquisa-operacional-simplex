@@ -32,7 +32,15 @@ def modo_execucao_1(pl): #TODO
 
 	# Para PLs viaveis:
 	if (otimalidade == True):
-		return "PL viavel\n"
+		base = aux.obtem_base_viavel(tableau_aux)
+		tableau_inicial = simplex.tableau_inicial(simplex.FPI(pl))
+		tableau_final, seq_tableaux, ilimitabilidade = \
+			simplex.simplex_primal(tableau_inicial, base)
+
+		if (ilimitabilidade == True):
+			return "PL ilimitada\n"
+		else:
+			return "PL viavel\n"
 	else:
 		cert_inv = cert.cert_inviabilidade(tableau_aux)
 		cert_str = np.array_str(cert_inv).replace('[', '{').replace(']', '}')

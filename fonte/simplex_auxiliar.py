@@ -33,7 +33,7 @@ def constroi_auxiliar(pl):
 	auxiliar[0] = primeira_linha
 
 	# Ajusta a base viavel da PL
-	base_viavel = list(range(len(zeros), len(zeros)+len(uns)-1))
+	base_viavel = list(range(len(zeros), len(zeros)+len(uns)-1))	
 
 	return (auxiliar, base_viavel)
 
@@ -46,3 +46,18 @@ def checa_viabilidade(pl):
 	otimo = simplex.val_obj_otimo_p(tableau_f)
 
 	return ((otimo == 0), tableau_f)
+
+def obtem_base_viavel(tableau_aux):
+	''' Retorna uma lista que contem o indice das colunas que formam uma base
+		viavel para a PL que gera o tableau auxiliar tableau_aux '''
+	base = []
+	solucao_aux = simplex.obtem_solucao(tableau_aux)
+	num_res = simplex.get_num_res(tableau_aux)
+	tam_solucao = len(solucao_aux)
+
+	# Captura os indices das variaveis nao nulas na solucao da PL auxiliar.
+	for i in range(0, tam_solucao):
+		if (solucao_aux[i] != 0):
+			base.append(i)
+
+	return base

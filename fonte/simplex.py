@@ -6,6 +6,8 @@ import numpy as np
 import simplex_auxiliar as aux
 import simplex_io as sio
 
+PRECISAO_CALCULO = 15
+
 def get_num_res(pl):
 	''' Retorna o numero de restricoes da PL '''
 	return len(pl) - 1
@@ -189,16 +191,27 @@ def simplex_primal(tableau, base):
 	num_res = get_num_res(tableau)
 	identidade = matriz_op(num_res)
 	saida = ""
+	ilimitabilidade = False
 
 	novo_tableau = ajusta_base(tableau, base)
-
+	novo_tableau = np.around(novo_tableau, decimals=PRECISAO_CALCULO)
 	saida = saida + sio.imprime_matriz(novo_tableau)
+
+	# Melhora a solucao indo de solucao basica viavel a solucao basica viavel.
 	while (simplex_primal_continua(novo_tableau)):
 		i_pivot = escolhe_pivot_p(novo_tableau)
+
+		# Algoritmo encontra situacao de ilimitabilidade.
+		if (i_pivot[0] < 0):
+			ilimitabilidade = True
+			break
+
 		novo_tableau = pivoteamento(novo_tableau, i_pivot[0], i_pivot[1])
+		novo_tableau = np.around(novo_tableau, decimals=PRECISAO_CALCULO)
+
 		saida = saida + sio.imprime_matriz(novo_tableau)
 
-	return (novo_tableau, saida)
+	return (novo_tableau, saida, ilimitabilidade)
 
 def simplex_dual(pl):#TODO
 	''' Aplica o simplex dual a uma pl '''
