@@ -28,10 +28,10 @@ def le_matriz_entrada(nome_entrada):
     arquivo_entrada.close()
     return matriz
 
-def imprime_matriz(matriz):
-    ''' Imprime uma matriz no formato definido pelo problema em um arquivo de
-        saida'''
-    string = np.array_str(matriz)
+def imprime_array(array):
+    ''' Converte um array numpy para uma string no formato definido pelo
+        problema.'''
+    string = np.array_str(array)
     string = re.sub(' +', ' ', string)
 
     string = string.replace("[ ", "[")
@@ -46,6 +46,6 @@ def imprime_matriz(matriz):
     string = string.replace(".}", "}")
 
     # Adiciona quebra de linha ao final da string
-    string = string + '\n'
+    string = string
 
     return string

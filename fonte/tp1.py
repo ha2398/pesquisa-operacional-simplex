@@ -40,11 +40,21 @@ def modo_execucao_1(pl): #TODO
 		if (ilimitabilidade == True):
 			return "PL ilimitada\n"
 		else:
-			return "PL viavel\n"
+			num_var = simplex.get_num_var(pl)
+			x = simplex.obtem_solucao(tableau_final)[0:num_var]
+			x = sio.imprime_array(x)
+
+			cTx = str(simplex.val_obj_otimo_p(tableau_final))
+
+			y = simplex.obtem_solucao_dual(tableau_final)
+			y = sio.imprime_array(y)
+
+			return "Solução ótima x = " + x + ", com valor objetivo " + \
+				cTx + ", e solução dual y = " + y + "\n"
 	else:
 		cert_inv = cert.cert_inviabilidade(tableau_aux)
-		cert_str = np.array_str(cert_inv).replace('[', '{').replace(']', '}')
-		return "PL inviável, aqui está um certificado " + cert_str + "\n"
+		cert_inv = sio.imprime_array(cert_inv)
+		return "PL inviável, aqui está um certificado " + cert_inv + "\n"
 
 def modo_execucao_2(pl): #TODO
 	''' Modo de execucao 2 '''

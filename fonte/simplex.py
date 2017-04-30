@@ -163,25 +163,35 @@ def checa_coluna_basica(coluna):
 	return basica
 
 def obtem_solucao(tableau):
-	''' Retorna o vetor que representa a solução da PL representada pelo
-		tableau final passado com parametro.'''
+	''' Retorna o vetor que representa a solucao da PL representada pelo
+		tableau final passado como parametro.'''
 	solucao = np.array([], dtype=float)
 	num_res = get_num_res(tableau)
 	num_linhas = len(tableau)
-	num_colunas = len(tableau[0])
-	b = tableau[0:num_linhas+1, num_colunas-1]
+	num_colunas = len(tableau[0]) - 1
+	b = tableau[0:num_linhas+1, num_colunas]
 
 	# Analisa cada coluna
 	for i in range(num_res, num_colunas):
 		coluna_atual = tableau[0:num_linhas+1, i]
 
+		# Para colunas básicas:
 		if (checa_coluna_basica(coluna_atual)):
 			for j in range(1, num_linhas):
 				if (coluna_atual[j] == 1):
 					solucao = np.append(solucao, np.array(b[j]))
 					break
+		# Para colunas não-básicas:
+		else:
+			solucao = np.append(solucao, 0.0)
 
 	return solucao
+
+def obtem_solucao_dual(tableau):
+	''' Retorna o vetor que representa a solucao da dual da PL representada
+		pelo tableau final passado como parametro. '''
+	num_res = get_num_res(tableau)
+	return tableau[0][0:num_res]
 
 def simplex_primal(tableau, base):
 	''' Aplica a o simplex primal a uma pl, tendo como ponto de partida 
@@ -195,7 +205,7 @@ def simplex_primal(tableau, base):
 
 	novo_tableau = ajusta_base(tableau, base)
 	novo_tableau = np.around(novo_tableau, decimals=PRECISAO_CALCULO)
-	saida = saida + sio.imprime_matriz(novo_tableau)
+	saida = saida + sio.imprime_array(novo_tableau) + '\n'
 
 	# Melhora a solucao indo de solucao basica viavel a solucao basica viavel.
 	while (simplex_primal_continua(novo_tableau)):
@@ -209,7 +219,7 @@ def simplex_primal(tableau, base):
 		novo_tableau = pivoteamento(novo_tableau, i_pivot[0], i_pivot[1])
 		novo_tableau = np.around(novo_tableau, decimals=PRECISAO_CALCULO)
 
-		saida = saida + sio.imprime_matriz(novo_tableau)
+		saida = saida + sio.imprime_array(novo_tableau) + '\n'
 
 	return (novo_tableau, saida, ilimitabilidade)
 
