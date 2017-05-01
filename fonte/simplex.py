@@ -6,7 +6,7 @@ import numpy as np
 import simplex_auxiliar as aux
 import simplex_io as sio
 
-PRECISAO_CALCULO = 15
+PRECISAO_CALCULO = 10
 
 def get_num_res(pl):
 	''' Retorna o numero de restricoes da PL '''
@@ -37,24 +37,32 @@ def FPI(pl):
 
 	return fpi
 
-def tableau_inicial(pl):
-	''' Merge uma PL em FPI e a identidade para obter o primeiro tableau '''
+def tableau_inicial(pl, modo):
+	''' Merge uma PL em FPI e a identidade para obter o primeiro tableau. 
+		Modo indica o modo de simplex que sera aplicado ao tableau.
+		1 = Primal, 2 = Dual. '''
 	num_res = get_num_res(pl)
-	nova_matriz = np.copy(pl)
+	tableau = np.copy(pl)
 
 	identidade_t = np.transpose(matriz_op(num_res))
 
 	for i in range(num_res-1, -1, -1):
-		nova_matriz = np.insert(nova_matriz, 0, identidade_t[i], axis=1)
+		tableau = np.insert(tableau, 0, identidade_t[i], axis=1)
 
-	colunas = len(nova_matriz[0])
+	colunas = len(tableau[0])
 
 	# Multiplica a primeira linha por -1
 	for i in range(0, colunas):
-		if (nova_matriz[0][i] != 0):
-			nova_matriz[0][i] = nova_matriz[0][i] * -1
+		if (tableau[0][i] != 0):
+			tableau[0][i] = tableau[0][i] * -1
 
-	return nova_matriz
+	# Garante que b >= 0 para simplex primal
+	if (modo == 1):
+		for i in range(1, num_res+1):
+			if (tableau[i][colunas-1] < 0):
+				tableau[i] = tableau[i] * -1
+
+	return tableau
 
 def simplex_primal_continua(tableau):
 	''' Retorna True se e somente se o simplex primal ainda tem iteracoes a
@@ -62,6 +70,15 @@ def simplex_primal_continua(tableau):
 	num_res = get_num_res(tableau)
 	primeira_linha = tableau[0][num_res:len(tableau[0])-1]
 	num_neg = [neg for neg in primeira_linha if neg < 0]
+
+	return len(num_neg) > 0
+
+def simplex_dual_continua(tableau):
+	''' Retorna True se e somente se o simplex dual ainda tem iteracoes a
+		executar '''
+	num_res = get_num_res(tableau)
+	b = tableau[1:num_res+1, len(tableau[0])-1]
+	num_neg = [neg for neg in b if neg < 0]
 
 	return len(num_neg) > 0
 
@@ -82,11 +99,11 @@ def escolhe_pivot_p(tableau):
 	# Obtem as razoes nao-negativas
 	for i in range(1, num_linhas_tableau):
 		a = tableau[i][coluna]
+		b = tableau[i][num_colunas_tableau-1]
 
-		if (a == 0):
+		if (a == 0 or b == -0):
 			continue
 
-		b = tableau[i][num_colunas_tableau-1]
 		razao = b/a
 
 		if (razao >= 0):
@@ -98,6 +115,39 @@ def escolhe_pivot_p(tableau):
 
 	razoes = sorted(razoes, key=lambda tup: tup[0])
 	return (razoes[0][1], coluna)
+
+def escolhe_pivot_d(tableau):
+	''' Retorna o indice do elemento pivot no tableau atual, considerando
+		o metodo de simplex dual '''
+	num_res = get_num_res(tableau)
+	b = tableau[1:num_res+1, len(tableau[0]) - 1]
+	linha = 1
+
+	while (b[linha-1] >= 0):
+		linha = linha + 1
+
+	razoes = []
+	num_colunas_tableau = len(tableau[0])
+
+	# Obtem as razoes nao-negativas
+	for coluna in range(num_res, num_colunas_tableau-1):
+		c = tableau[0][coluna]
+		a = tableau[linha][coluna]
+
+		# c deve ser maior ou igual a zero.
+		# a deve ser negativo.
+		if (c < 0 or a >= 0):
+			continue
+		
+		razao = c / (-a)
+		razoes.insert(0, (razao, coluna))
+
+	# Checa se alguma razao valida foi encontrada.
+	if (len(razoes) == 0):
+		return (-1, -1)
+
+	razoes = sorted(razoes, key=lambda tup: tup[0])
+	return (linha, razoes[0][1])
 
 def pivoteamento(tableau, i, j):
 	''' Realiza o pivoteamento em um tableau, tendo como elemento pivot
@@ -140,9 +190,14 @@ def ajusta_base(tableau, base):
 	return novo_tableau
 
 def val_obj_otimo_p(tableau):
-	''' Retorna o valor objetivo da PL de acordo com o tableau passado como
-		parametro. '''
+	''' Retorna o valor objetivo da PL de acordo com o tableau primal passado
+		como parametro. '''
 	return tableau[0][len(tableau[0])-1]
+
+def val_obj_otimo_d(tableau):
+	''' Retorna o valor objetivo da PL de acordo com o tableau dual passado
+		como parametro. '''
+	return -1 * val_obj_otimo_p(tableau)
 
 def checa_coluna_basica(coluna):
 	''' Retorna True se, e somente se, a coluna eh basica no tableau '''
@@ -218,10 +273,30 @@ def simplex_primal(tableau, base):
 
 		novo_tableau = pivoteamento(novo_tableau, i_pivot[0], i_pivot[1])
 		novo_tableau = np.around(novo_tableau, decimals=PRECISAO_CALCULO)
-
 		saida = saida + sio.imprime_array(novo_tableau) + '\n'
 
 	return (novo_tableau, saida, ilimitabilidade)
 
-def simplex_dual(pl):#TODO
-	''' Aplica o simplex dual a uma pl '''
+def simplex_dual(tableau, base):
+	''' Aplica a o simplex dual a uma pl, tendo como ponto de partida 
+		a base viavel de colunas passada como parametro e o tableau inicial.
+		Retorna uma tupla que contem o tableau final e uma string que
+		representa a sequencia de tableaux obtida durante o simplex '''
+	num_res = get_num_res(tableau)
+	identidade = matriz_op(num_res)
+	saida = ""
+	ilimitabilidade = False
+
+	novo_tableau = ajusta_base(tableau, base)
+	novo_tableau = np.around(novo_tableau, decimals=PRECISAO_CALCULO)
+	saida = saida + sio.imprime_array(novo_tableau) + '\n'
+
+	# Melhora a solucao indo de solucao basica viavel a solucao basica viavel.
+	while (simplex_dual_continua(novo_tableau)):
+		i_pivot = escolhe_pivot_d(novo_tableau)
+
+		novo_tableau = pivoteamento(novo_tableau, i_pivot[0], i_pivot[1])
+		novo_tableau = np.around(novo_tableau, decimals=PRECISAO_CALCULO)
+		saida = saida + sio.imprime_array(novo_tableau) + '\n'
+
+	return (novo_tableau, saida, ilimitabilidade)

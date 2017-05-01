@@ -26,14 +26,14 @@ def processa_entrada(nome_entrada):
 
 	return sio.le_matriz_entrada(nome_entrada)
 
-def modo_execucao_1(pl): #TODO
+def modo_execucao_1(pl):
 	''' Modo de execucao 1 '''
 	otimalidade, tableau_aux = aux.checa_viabilidade(pl)
 
 	# Para PLs viaveis:
 	if (otimalidade == True):
 		base = aux.obtem_base_viavel(tableau_aux)
-		tableau_inicial = simplex.tableau_inicial(simplex.FPI(pl))
+		tableau_inicial = simplex.tableau_inicial(simplex.FPI(pl), 1)
 		tableau_final, seq_tableaux, ilimitabilidade = \
 			simplex.simplex_primal(tableau_inicial, base)
 
@@ -56,7 +56,7 @@ def modo_execucao_1(pl): #TODO
 		cert_inv = sio.imprime_array(cert_inv)
 		return "PL inviável, aqui está um certificado " + cert_inv + "\n"
 
-def modo_execucao_2(pl): #TODO
+def modo_execucao_2(pl):
 	''' Modo de execucao 2 '''
 
 	print("\n* Selecione o tipo de simplex:\n")
@@ -69,10 +69,20 @@ def modo_execucao_2(pl): #TODO
 		print("[Erro]: Tipo de simplex invalido.")
 		exit()
 
+	num_var = simplex.get_num_var(pl)
+	num_res = simplex.get_num_res(pl)
+
+	base = [(i+num_res+num_var) for i in range(0, num_res)]
+
 	# Simplex Primal
 	if (tipo_simplex == 1):
-		tableau_inicial = simplex.tableau_inicial(simplex.FPI(pl))
-		return simplex.simplex_primal(tableau_inicial, [4,5])[1]
+		tableau_inicial = simplex.tableau_inicial(simplex.FPI(pl), tipo_simplex)
+		return simplex.simplex_primal(tableau_inicial, base)[1]
+
+	# Simplex Dual
+	if (tipo_simplex == 2):
+		tableau_inicial = simplex.tableau_inicial(simplex.FPI(pl), tipo_simplex)
+		return simplex.simplex_dual(tableau_inicial, base)[1]
 
 
 def main():

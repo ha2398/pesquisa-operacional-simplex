@@ -7,7 +7,7 @@ import simplex
 
 def constroi_auxiliar(pl):
 	''' Constroi o tableau auxiliar de uma PL, para verificar viabilidade '''
-	auxiliar = simplex.tableau_inicial(simplex.FPI(pl))
+	auxiliar = simplex.tableau_inicial(simplex.FPI(pl), 1)
 
 	num_res = simplex.get_num_res(auxiliar)
 	num_var = simplex.get_num_var(auxiliar)
@@ -58,6 +58,6 @@ def obtem_base_viavel(tableau_aux):
 	# Captura os indices das variaveis nao nulas na solucao da PL auxiliar.
 	for i in range(0, tam_solucao):
 		if (solucao_aux[i] != 0):
-			base.append(i)
+			base.append(i+num_res)
 
 	return base

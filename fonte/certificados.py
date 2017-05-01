@@ -7,4 +7,4 @@ import simplex
 def cert_inviabilidade(tableau_aux):
 	''' Retorna um certificado de inviabilidade de uma PL. Para isso, deve
 		ser passado como parameto o tableau final da PL auxiliar dessa PL '''
-	return obtem_solucao_dual(tableau_aux)
+	return simplex.obtem_solucao_dual(tableau_aux)
