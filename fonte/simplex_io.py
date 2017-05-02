@@ -11,7 +11,7 @@ PRECISAO_IMPRESSAO = 5
 def configura_impressao_float():
     ''' Configura como os dados do tipo float em arrays numpy serao
         impressos '''
-    np.set_printoptions(precision=PRECISAO_IMPRESSAO)
+    np.set_printoptions(precision=PRECISAO_IMPRESSAO, suppress=True)
     
 def le_matriz_entrada(nome_entrada):
     ''' Le o arquivo de entrada e o transforma em uma matriz Numpy '''
@@ -19,7 +19,7 @@ def le_matriz_entrada(nome_entrada):
     entrada = arquivo_entrada.read().split()
 
     # Checa formato invalido de entrada.
-    if (len(entrada) < 3):
+    if (len(entrada) < 5):
         print("[Erro]: Arquivo de entrada inválido.")
         exit()
 
@@ -37,9 +37,9 @@ def le_matriz_entrada(nome_entrada):
 
     # String que representa a PL.
     if (modo_execucao == 1):
-        string_matriz = entrada[2]
+        string_matriz = entrada[4]
     else:
-        string_matriz = entrada[3]
+        string_matriz = entrada[5]
     
     # Converte a string para o formato de input para Numpy
     string_matriz = string_matriz.replace("}", "]")

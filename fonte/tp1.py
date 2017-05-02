@@ -25,8 +25,11 @@ def modo_execucao_1(pl):
 		tableau_final, seq_tableaux, ilimitabilidade = \
 			simplex.simplex_primal(tableau_inicial, base)
 
+		# PLs ilimitadas.
 		if (ilimitabilidade == True):
-			return "PL ilimitada\n"
+			cert.cert_ilimitabilidade(tableau_final)
+			return ""
+		# PLs limitadas.
 		else:
 			num_var = simplex.get_num_var(pl)
 			x = simplex.obtem_solucao(tableau_final)[0:num_var]
@@ -39,6 +42,7 @@ def modo_execucao_1(pl):
 
 			return "Solução ótima x = " + x + ", com valor objetivo " + \
 				cTx + ", e solução dual y = " + y + "\n"
+	# Pls inviáveis.
 	else:
 		cert_inv = cert.cert_inviabilidade(tableau_aux)
 		cert_inv = sio.imprime_array(cert_inv)
@@ -74,6 +78,7 @@ def main():
 	if (len(sys.argv) != 3):
 		print("[Erro]: Numero incorreto de parametros.")
 		print("Uso: python", sys.argv[0], "<entrada> <saida>")
+		return
 
 	nome_entrada = sys.argv[1]
 	nome_saida = sys.argv[2]

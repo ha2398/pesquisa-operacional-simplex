@@ -8,25 +8,12 @@ O objetivo deste trabalho é implementar o algoritmo Simplex para resolução de
 
 ## Entrada
 
-A entrada do programa sera da forma:
-
-Modo x
-
-[Tipo Simplex]
-
-Matriz PL
-
-A primeira linha indica o modo a ser executado (como descrito abaixo). Há dois modos disponíveis.
-
-Caso o modo escolhido seja o modo 2, então a segunda linha deve conter um caracter que indica o tipo do simplex a ser utilizado. **P** para simplex Primal e **D** para simplex Dual.
-
-Por fim, na terceira linha (para modo 2) ou segunda linha (para modo 1), deve ser representada uma matriz que contém as informações da PL. Essa matriz tem o formato a seguir.
-
+A entrada do programa é um arquivo .txt. Nesse arquivo deverá estar representada uma matriz com (m+1) linhas e (n+1) colunas da forma:
 
         [ c^T 0 ]
     X = [ A   b ]
 
-escrita no formato {{linha 0}, {linha 1},...,{linha n}}, correspondendo à PL
+escrita no formato m **enter** n **enter** {{linha 0},{linha 1},...,{linha m}}, correspondendo à PL:
 
 **max c^T x**
 
@@ -34,6 +21,11 @@ escrita no formato {{linha 0}, {linha 1},...,{linha n}}, correspondendo à PL
 
 **x >= 0**.
 
+A primeira linha do arquivo de entrada deve indicar o modo de execução (detalhado abaixo).
+
+Caso o modo escolhido seja o modo 2, então a segunda linha deve conter um caracter que indica o tipo do simplex a ser utilizado. **P** para simplex Primal e **D** para simplex Dual.
+
+Em seguida temos os indicadores de tamanho da matriz e a própria matriz, como explicado acima.
 
 ## Saída
 
