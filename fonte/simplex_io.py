@@ -6,7 +6,7 @@ import ast
 import numpy as np
 import re
 
-PRECISAO_IMPRESSAO = 3
+PRECISAO_IMPRESSAO = 5
 
 def configura_impressao_float():
     ''' Configura como os dados do tipo float em arrays numpy serao
@@ -15,9 +15,31 @@ def configura_impressao_float():
     
 def le_matriz_entrada(nome_entrada):
     ''' Le o arquivo de entrada e o transforma em uma matriz Numpy '''
-
     arquivo_entrada = open(nome_entrada, 'r')
-    string_matriz = arquivo_entrada.read()
+    entrada = arquivo_entrada.read().split()
+
+    # Checa formato invalido de entrada.
+    if (len(entrada) < 3):
+        print("[Erro]: Arquivo de entrada inválido.")
+        exit()
+
+    # Modo de execucao
+    modo_execucao = int(entrada[1])
+
+    # Tipo de Simplex
+    if (modo_execucao == 2):
+        if(entrada[2] == 'P'):
+            simplex = 1
+        else:
+            simplex = 2
+    else:
+        simplex = 0 # Nao especificado.
+
+    # String que representa a PL.
+    if (modo_execucao == 1):
+        string_matriz = entrada[2]
+    else:
+        string_matriz = entrada[3]
     
     # Converte a string para o formato de input para Numpy
     string_matriz = string_matriz.replace("}", "]")
@@ -26,7 +48,7 @@ def le_matriz_entrada(nome_entrada):
     matriz = np.array(ast.literal_eval(string_matriz), dtype=float)
     
     arquivo_entrada.close()
-    return matriz
+    return (matriz, modo_execucao, simplex) 
 
 def imprime_array(array):
     ''' Converte um array numpy para uma string no formato definido pelo

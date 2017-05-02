@@ -9,18 +9,6 @@ import simplex_io as sio
 import simplex
 import sys
 
-def menu():
-	''' Exibe uma mensagem inicial com opcoes e retorna a opcao escolhida '''
-
-	print("\tTrabalho Pratico 1")
-	print("\tSIMPLEX\n")
-	print("* Selecione o modo de execucao:\n")
-	print("(1) PLs arbitrarias e grandes")
-	print("(2) PL viavel e limitada\n")
-
-	opcao = input("Modo: ")
-	return opcao
-
 def processa_entrada(nome_entrada):
 	''' Abre o arquivo de entrada contendo a PL a ser resolvida '''
 
@@ -56,14 +44,9 @@ def modo_execucao_1(pl):
 		cert_inv = sio.imprime_array(cert_inv)
 		return "PL inviável, aqui está um certificado " + cert_inv + "\n"
 
-def modo_execucao_2(pl):
+def modo_execucao_2(pl, tipo_simplex):
 	''' Modo de execucao 2 '''
 
-	print("\n* Selecione o tipo de simplex:\n")
-	print("(1) Primal")
-	print("(2) Dual\n")
-
-	tipo_simplex = int(input("Tipo: "))
 	# Checa tipo valido
 	if (tipo_simplex < 1 or tipo_simplex > 2):
 		print("[Erro]: Tipo de simplex invalido.")
@@ -95,14 +78,13 @@ def main():
 	nome_entrada = sys.argv[1]
 	nome_saida = sys.argv[2]
 
-	modo_execucao = int(menu())
+	# Processa o arquivo de entrada com a PL a ser resolvida
+	pl, modo_execucao, tipo_simplex = processa_entrada(nome_entrada)
+
 	# Checa opcao valida
 	if (modo_execucao < 1 or modo_execucao > 2):
 		print("[Erro]: Modo de execucao invalido.")
 		exit()
-
-	# Processa o arquivo de entrada com a PL a ser resolvida
-	pl = processa_entrada(nome_entrada)
 
 	arquivo_saida = open(nome_saida, 'w')
 
@@ -110,7 +92,7 @@ def main():
 	if (modo_execucao == 1):
 		saida = modo_execucao_1(pl)
 	if (modo_execucao == 2):
-		saida = modo_execucao_2(pl)
+		saida = modo_execucao_2(pl, tipo_simplex)
 
 	print(saida, end="", file=arquivo_saida)
 	arquivo_saida.close()
