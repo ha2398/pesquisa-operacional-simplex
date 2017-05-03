@@ -17,6 +17,7 @@ def processa_entrada(nome_entrada):
 def modo_execucao_1(pl):
 	''' Modo de execucao 1 '''
 	otimalidade, tableau_aux = aux.checa_viabilidade(pl)
+	num_var = simplex.get_num_var(pl)
 
 	# Para PLs viaveis:
 	if (otimalidade == True):
@@ -27,11 +28,12 @@ def modo_execucao_1(pl):
 
 		# PLs ilimitadas.
 		if (ilimitabilidade == True):
-			cert.cert_ilimitabilidade(tableau_final)
-			return ""
+			cert_ilim = cert.cert_ilimitabilidade(tableau_final)
+			cert_ilim = sio.imprime_array(cert_ilim)
+
+			return "PL ilimitada, aqui está um certificado " + cert_ilim + "\n"
 		# PLs limitadas.
 		else:
-			num_var = simplex.get_num_var(pl)
 			x = simplex.obtem_solucao(tableau_final)[0:num_var]
 			x = sio.imprime_array(x)
 
