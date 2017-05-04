@@ -1,4 +1,5 @@
 """
+simplex.py: Define as funções para implementação do algoritmo Simplex.
 @author: Hugo Araujo de Sousa [2013007463]
 """
 
@@ -6,26 +7,28 @@ import numpy as np
 import simplex_auxiliar as aux
 import simplex_io as sio
 
+''' Precisão decimal considerada durantes os cálculos com números de
+	ponto-flutuante.'''
 PRECISAO_CALCULO = 10
 
 def get_num_res(pl):
-	''' Retorna o numero de restricoes da PL '''
+	''' Retorna o numero de restricoes da @pl '''
 	return len(pl) - 1
 
 def get_num_var(pl):
-	''' Retorna o numero de variaveis da PL '''
+	''' Retorna o numero de variaveis da @pl '''
 	return len(pl[0]) - 1
 
 def matriz_op(num_res):
-	''' Cria matriz de operacoes a ser adicionada ao primeiro tableau '''
+	''' Cria matriz de operacoes a ser adicionada ao primeiro tableau. @num_res
+		representa o número de restrições da PL.'''
 	zeros = [[0. for x in range(0, num_res)]]
 	op = np.identity(num_res)
 	op = np.append(zeros, op, axis = 0)
 	return op
 
 def FPI(pl):
-	''' Coloca uma PL em forma padrao de igualdades '''
-
+	''' Coloca uma @pl em forma padrao de igualdades '''
 	fpi = np.copy(pl)
 	num_var = get_num_var(pl)
 	num_res = get_num_res(pl)
@@ -38,8 +41,8 @@ def FPI(pl):
 	return fpi
 
 def tableau_inicial(pl, modo):
-	''' Merge uma PL em FPI e a identidade para obter o primeiro tableau. 
-		Modo indica o modo de simplex que sera aplicado ao tableau.
+	''' Merge uma @pl em FPI e a identidade para obter o primeiro tableau. 
+		@modo indica o modo de simplex que sera aplicado ao tableau.
 		1 = Primal, 2 = Dual. '''
 	num_res = get_num_res(pl)
 	tableau = np.copy(pl)
@@ -66,7 +69,7 @@ def tableau_inicial(pl, modo):
 
 def simplex_primal_continua(tableau):
 	''' Retorna True se e somente se o simplex primal ainda tem iteracoes a
-		executar '''
+		executar, considerando o @tableau passado como parametro.'''
 	num_res = get_num_res(tableau)
 	primeira_linha = tableau[0][num_res:len(tableau[0])-1]
 	num_neg = [neg for neg in primeira_linha if neg < 0]
@@ -75,7 +78,7 @@ def simplex_primal_continua(tableau):
 
 def simplex_dual_continua(tableau):
 	''' Retorna True se e somente se o simplex dual ainda tem iteracoes a
-		executar '''
+		executar, considerando o @tableau passado como parametro.'''
 	num_res = get_num_res(tableau)
 	b = tableau[1:num_res+1, len(tableau[0])-1]
 	num_neg = [neg for neg in b if neg < 0]
@@ -83,8 +86,8 @@ def simplex_dual_continua(tableau):
 	return len(num_neg) > 0
 
 def escolhe_pivot_p(tableau):
-	''' Retorna o indice do elemento pivot no tableau atual, considerando
-		o metodo de simplex primal '''
+	''' Retorna o indice do elemento pivot no @tableau atual, considerando
+		o metodo de simplex primal.'''
 	num_res = get_num_res(tableau)
 	primeira_linha = tableau[0][num_res:len(tableau[0])-1]
 	coluna = num_res
@@ -117,8 +120,8 @@ def escolhe_pivot_p(tableau):
 	return (razoes[0][1], coluna)
 
 def escolhe_pivot_d(tableau):
-	''' Retorna o indice do elemento pivot no tableau atual, considerando
-		o metodo de simplex dual '''
+	''' Retorna o indice do elemento pivot no @tableau atual, considerando
+		o metodo de simplex dual.'''
 	num_res = get_num_res(tableau)
 	b = tableau[1:num_res+1, len(tableau[0]) - 1]
 	linha = 1
@@ -150,8 +153,8 @@ def escolhe_pivot_d(tableau):
 	return (linha, razoes[0][1])
 
 def pivoteamento(tableau, i, j):
-	''' Realiza o pivoteamento em um tableau, tendo como elemento pivot
-		o elemento dado pelos indices i e j, ou seja T[i][j] '''
+	''' Realiza o pivoteamento em um @tableau, tendo como elemento pivot
+		o elemento dado pelos indices @i e @j, ou seja T[i][j] '''
 	colunas = len(tableau[0])
 	linhas = len(tableau)
 	pivot = tableau[i][j]
@@ -176,8 +179,7 @@ def pivoteamento(tableau, i, j):
 	return tableau
 
 def ajusta_base(tableau, base):
-	''' Ajusta a base viavel de um tableau '''
-
+	''' Ajusta a @base viavel de um @tableau.'''
 	num_res = get_num_res(tableau)
 	num_var = get_num_var(tableau) - num_res
 
@@ -190,17 +192,17 @@ def ajusta_base(tableau, base):
 	return novo_tableau
 
 def val_obj_otimo_p(tableau):
-	''' Retorna o valor objetivo da PL de acordo com o tableau primal passado
-		como parametro. '''
+	''' Retorna o valor objetivo da PL de acordo com o @tableau primal passado
+		como parametro.'''
 	return tableau[0][len(tableau[0])-1]
 
 def val_obj_otimo_d(tableau):
-	''' Retorna o valor objetivo da PL de acordo com o tableau dual passado
-		como parametro. '''
+	''' Retorna o valor objetivo da PL de acordo com o @tableau dual passado
+		como parametro.'''
 	return -1 * val_obj_otimo_p(tableau)
 
 def checa_coluna_basica(coluna):
-	''' Retorna True se, e somente se, a coluna eh basica no tableau '''
+	''' Retorna True se, e somente se, a @coluna é básica no tableau.'''
 	basica = False
 	num_zeros = 0
 	num_uns = 0
@@ -219,7 +221,7 @@ def checa_coluna_basica(coluna):
 
 def obtem_solucao(tableau):
 	''' Retorna o vetor que representa a solucao da PL representada pelo
-		tableau final passado como parametro.'''
+		@tableau final passado como parametro.'''
 	solucao = np.array([], dtype=float)
 	num_res = get_num_res(tableau)
 	num_linhas = len(tableau)
@@ -244,13 +246,13 @@ def obtem_solucao(tableau):
 
 def obtem_solucao_dual(tableau):
 	''' Retorna o vetor que representa a solucao da dual da PL representada
-		pelo tableau final passado como parametro. '''
+		pelo @tableau final passado como parametro. '''
 	num_res = get_num_res(tableau)
 	return tableau[0][0:num_res]
 
 def simplex_primal(tableau, base):
 	''' Aplica a o simplex primal a uma pl, tendo como ponto de partida 
-		a base viavel de colunas passada como parametro e o tableau inicial.
+		a @base viavel de colunas passada como parametro e o @tableau inicial.
 		Retorna uma tupla que contem o tableau final e uma string que
 		representa a sequencia de tableaux obtida durante o simplex '''
 	num_res = get_num_res(tableau)
@@ -279,7 +281,7 @@ def simplex_primal(tableau, base):
 
 def simplex_dual(tableau, base):
 	''' Aplica a o simplex dual a uma pl, tendo como ponto de partida 
-		a base viavel de colunas passada como parametro e o tableau inicial.
+		a @base viavel de colunas passada como parametro e o @tableau inicial.
 		Retorna uma tupla que contem o tableau final e uma string que
 		representa a sequencia de tableaux obtida durante o simplex '''
 	num_res = get_num_res(tableau)

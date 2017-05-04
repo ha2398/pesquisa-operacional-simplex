@@ -1,4 +1,5 @@
 """
+simplex_auxiliar.py: Define funções para manipulação de PLs auxiliares.
 @author: Hugo Araujo de Sousa [2013007463]
 """
 
@@ -6,7 +7,7 @@ import numpy as np
 import simplex
 
 def constroi_auxiliar(pl):
-	''' Constroi o tableau auxiliar de uma PL, para verificar viabilidade '''
+	''' Constroi o tableau auxiliar de uma @pl, para verificar viabilidade '''
 	auxiliar = simplex.tableau_inicial(simplex.FPI(pl), 1)
 
 	num_res = simplex.get_num_res(auxiliar)
@@ -38,9 +39,8 @@ def constroi_auxiliar(pl):
 	return (auxiliar, base_viavel)
 
 def checa_viabilidade(pl):
-	''' Checa a viabilidade de uma PL. Retorna True se a PL for viavel e False
+	''' Checa a viabilidade de uma @pl. Retorna True se a @pl for viavel e False
 		caso contrario. '''
-
 	auxiliar, base = constroi_auxiliar(pl)
 	tableau_f = simplex.simplex_primal(auxiliar, base)[0]
 	otimo = simplex.val_obj_otimo_p(tableau_f)
@@ -49,7 +49,7 @@ def checa_viabilidade(pl):
 
 def obtem_base_viavel(tableau_aux):
 	''' Retorna uma lista que contem o indice das colunas que formam uma base
-		viavel para a PL que gera o tableau auxiliar tableau_aux '''
+		viavel para a PL que gera o tableau auxiliar @tableau_aux.'''
 	base = []
 	solucao_aux = simplex.obtem_solucao(tableau_aux)
 	num_res = simplex.get_num_res(tableau_aux)

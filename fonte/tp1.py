@@ -1,4 +1,5 @@
 """
+tp1.py: Programa principal - Trabalho Prático 1 - Simplex.
 @author: Hugo Araujo de Sousa [2013007463]
 """
 
@@ -10,12 +11,13 @@ import simplex
 import sys
 
 def processa_entrada(nome_entrada):
-	''' Abre o arquivo de entrada contendo a PL a ser resolvida '''
+	''' Abre o arquivo de entrada, com nome @nome_entrada contendo a PL a ser
+		resolvida '''
 
 	return sio.le_matriz_entrada(nome_entrada)
 
 def modo_execucao_1(pl):
-	''' Modo de execucao 1 '''
+	''' Modo de execucao 1. @pl representa a PL a ser resolvida. '''
 	otimalidade, tableau_aux = aux.checa_viabilidade(pl)
 	num_var = simplex.get_num_var(pl)
 
@@ -51,7 +53,8 @@ def modo_execucao_1(pl):
 		return "PL inviável, aqui está um certificado " + cert_inv + "\n"
 
 def modo_execucao_2(pl, tipo_simplex):
-	''' Modo de execucao 2 '''
+	''' Modo de execucao 2. @pl representa a pl a ser resolvida e @tipo_simplex
+		indice qual simplex a utilizar, 1 pra primal e 2 para dual. '''
 
 	# Checa tipo valido
 	if (tipo_simplex < 1 or tipo_simplex > 2):

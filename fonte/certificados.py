@@ -1,4 +1,6 @@
 """
+certificados.py: Define funções para obtenção de certificados de Programação
+Linear.
 @author: Hugo Araujo de Sousa [2013007463]
 """
 
@@ -7,12 +9,13 @@ import simplex
 
 def cert_inviabilidade(tableau_aux):
 	''' Retorna um certificado de inviabilidade de uma PL. Para isso, deve
-		ser passado como parameto o tableau final da PL auxiliar dessa PL '''
+		ser passado como parameto o tableau final da PL auxiliar dessa PL,
+		@tableau_aux.'''
 	return simplex.obtem_solucao_dual(tableau_aux)
 
 def cert_ilimitabilidade(tableau_final):
 	''' Retorna um certificado de ilimitabilidade de uma PL. Para isso, deve
-		ser passado como parameto o tableau final dessa PL. '''
+		ser passado como parameto o tableau final dessa PL, @tableau_final.'''
 	num_res = simplex.get_num_res(tableau_final)
 	num_colunas = len(tableau_final[0]) - 1
 

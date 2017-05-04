@@ -1,4 +1,6 @@
 """
+simplex_io.py: Define formato e funções de entrada e saída do algoritmo
+Simplex implementado.
 @author: Hugo Araujo de Sousa [2013007463]
 """
 
@@ -6,15 +8,18 @@ import ast
 import numpy as np
 import re
 
+''' Define a precisão decimal com que os números de ponto-flutuante serão
+    impressos. '''
 PRECISAO_IMPRESSAO = 5
 
 def configura_impressao_float():
     ''' Configura como os dados do tipo float em arrays numpy serao
-        impressos '''
+        impressos.'''
     np.set_printoptions(precision=PRECISAO_IMPRESSAO, suppress=True)
     
 def le_matriz_entrada(nome_entrada):
-    ''' Le o arquivo de entrada e o transforma em uma matriz Numpy '''
+    ''' Le o arquivo de entrada de nome @nome_entrada e o transforma em uma
+        matriz Numpy.'''
     arquivo_entrada = open(nome_entrada, 'r')
     entrada = arquivo_entrada.read().split()
 
@@ -51,7 +56,7 @@ def le_matriz_entrada(nome_entrada):
     return (matriz, modo_execucao, simplex) 
 
 def imprime_array(array):
-    ''' Converte um array numpy para uma string no formato definido pelo
+    ''' Converte um @array numpy para uma string no formato definido pelo
         problema.'''
     string = np.array_str(array)
     string = re.sub(' +', ' ', string)
