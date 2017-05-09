@@ -9,7 +9,7 @@ import simplex_io as sio
 
 ''' Precisão decimal considerada durantes os cálculos com números de
 	ponto-flutuante.'''
-PRECISAO_CALCULO = 20
+PRECISAO_CALCULO = 15
 
 def get_num_res(pl):
 	''' Retorna o numero de restricoes da @pl '''
@@ -104,7 +104,7 @@ def escolhe_pivot_p(tableau):
 		a = tableau[i][coluna]
 		b = tableau[i][num_colunas_tableau-1]
 
-		if (a == 0 or b == -0):
+		if (a == 0 or b == 0):
 			continue
 
 		razao = b/a
