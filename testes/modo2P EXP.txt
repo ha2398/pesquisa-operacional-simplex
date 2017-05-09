@@ -1,4 +1,4 @@
-modo 1
+modo 2
 P
 5
 5
