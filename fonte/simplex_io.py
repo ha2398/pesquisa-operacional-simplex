@@ -15,7 +15,7 @@ PRECISAO_IMPRESSAO = 5
 def configura_impressao_float():
     ''' Configura como os dados do tipo float em arrays numpy serao
         impressos.'''
-    np.set_printoptions(precision=PRECISAO_IMPRESSAO, suppress=True)
+    np.set_printoptions(precision=PRECISAO_IMPRESSAO)
     
 def le_matriz_entrada(nome_entrada):
     ''' Le o arquivo de entrada de nome @nome_entrada e o transforma em uma

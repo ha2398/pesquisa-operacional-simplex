@@ -45,7 +45,7 @@ def checa_viabilidade(pl):
 	tableau_f = simplex.simplex_primal(auxiliar, base)[0]
 	otimo = simplex.val_obj_otimo_p(tableau_f)
 
-	return ((otimo == 0), tableau_f)
+	return (not (otimo < 0), tableau_f)
 
 def obtem_base_viavel(tableau_aux):
 	''' Retorna uma lista que contem o indice das colunas que formam uma base

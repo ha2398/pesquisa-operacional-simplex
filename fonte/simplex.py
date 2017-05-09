@@ -9,7 +9,7 @@ import simplex_io as sio
 
 ''' Precisão decimal considerada durantes os cálculos com números de
 	ponto-flutuante.'''
-PRECISAO_CALCULO = 10
+PRECISAO_CALCULO = 20
 
 def get_num_res(pl):
 	''' Retorna o numero de restricoes da @pl '''
